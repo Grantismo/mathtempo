@@ -1,0 +1,13 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      This is the problems view.
+      <div ng-repeat="problem in problems">
+        <h1> <a ui-sref="problems-detail({id: problem._id})"> Problem {{$index}} </a> </h1> 
+        <p> {{problem.content}} </p>
+      </div>
+    </div>
+  </div>
+</div>
