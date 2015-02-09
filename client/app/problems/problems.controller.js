@@ -10,13 +10,24 @@ angular.module('mathtempoApp')
     $scope.user = Auth.getCurrentUser();
     $scope.answered = false;
 
+    var baseUrl = '/api/problems/' + $stateParams.id;
+
     $scope.problem = {};
-    $http.get('/api/problems/' + $stateParams.id).success(function(problem){
+    $http.get(baseUrl).success(function(problem){
       $scope.problem = problem;
     });
 
+    $scope.addComment = function(content){
+      $http.post(baseUrl + "/comment", {content: content}).success(function(problem){
+        $scope.problem = problem;
+
+      }).error(function(err){
+        alert("Error adding comment");
+      });
+    };
+
     $scope.submitAnswer = function(answer){
-      $http.post('/api/problems/' + $stateParams.id + "/answer", {answer: answer}).success(function(result){
+      $http.post(baseUrl + "/answer", {answer: answer}).success(function(result){
 
         $scope.userRatingChange = result.userRatingChange;
         $scope.user.rating = $scope.user.rating + result.userRatingChange;

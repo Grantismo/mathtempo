@@ -8,22 +8,58 @@
           Problem #{{problem._id}}
         </div>
         <div class="panel-body"> 
-          <p>
-            {{problem.content}}
-            {{answered ? " = " + problem.answer : '' }}
-          </p>
-          <p ng-if="answered && !correct">
-            Your answer: {{yourAnswer}}   
-          </p>
+          <div class="well">
+            <h1> {{problem.content}} = {{answered ? problem.answer : '?' }} </h1>
+            <small ng-if="answered"> Your answer: {{yourAnswer}} </small> 
+          </div>
+
+          <form ng-if="!answered" novalidate ng-submit="submitAnswer(answer)">
+            <div class="form-group">
+              <label for="answer"> Answer </label> 
+              <input type="text" id="answer" class="form-control" ng-model="answer" />
+            </div>
+            <input type="submit"  value="Submit" class="btn btn-primary" />
+          </form>
+
+          <div ng-if="answered" class="row">
+            <div class="col-md-12">
+              <a href="./api/problems/next" class="btn btn-primary"> Next <i class="glyphicon glyphicon-chevron-right"></i>
+              </a> 
+            </div>
+          </div>
         </div>
       </div>
-      <form novalidate ng-submit="submitAnswer(answer)">
-        <div class="form-group">
-          <label for="answer"> Answer </label> 
-          <input type="text" id="answer" class="form-control" ng-model="answer" /><br />
+      <div class="panel panel-default comments" ng-if="answered">
+        <div class="panel-heading">
+          Comments
         </div>
-        <input type="submit"  value="Submit" class="btn btn-primary" />
-      </form>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-12">
+              <form class="form-vertical" novalidate ng-submit="addComment(content)">
+                <div class="form-group">
+                  <textarea rows="3" class="form-control" ng-model="content" />
+                </div>
+                <input type="submit" value="Add Comment" class="btn btn-primary" />
+              </form>
+              <hr />
+            </div>
+          </div>
+          <div ng-repeat="comment in problem.comments | orderBy:'createdAt':true">
+            <div class="well">
+              <div class="row">
+                <div class="col-md-2">
+                  <h4 class="author"> {{comment.author !== undefined ? comment.author.name : "Unknown"}} </h4>
+                  <small> {{comment.createdAt | date:'medium'}} </small>
+                </div>
+                <div class="col-md-10 comment-box">
+                  <p class="comment"> {{comment.content}} </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-md-4">
       <div class="panel panel-default">
