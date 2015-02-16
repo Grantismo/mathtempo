@@ -16,18 +16,24 @@ exports.index = function(req, res) {
 };
 
 // Get list of problems
-exports.next = function(req, res) {
-  Problem.findOne("first -answer").exec(function(err, problem) {
+exports.nextProblem = function(req, res) {
+  var user = req.user;
+  var range = user.rating_deviation * 2;
+  var upperBound = user.rating + range;
+  var lowerBound = user.rating - range;
+
+  Problem.find({ rating: { $gt: lowerBound, $lt: upperBound } }, '-answer').exec(function(err, problems) {
     if (err) {
       return handleError(res, err);
     }
+    var problem = problems[Math.floor(Math.random() * problems.length)];
     return res.json(problem);
   });
 };
 
 // Get a single problem
 exports.show = function(req, res) {
-  Problem.findById(req.params.id).populate("comments.author", "name").exec(function(err, problem) {
+  Problem.findById(req.params.id).populate("comments.user", "name").exec(function(err, problem) {
     if (err) {
       return handleError(res, err);
     }
@@ -90,7 +96,7 @@ exports.destroy = function(req, res) {
 
 // Creates a new problem in the DB.
 exports.comment = function(req, res) {
-  Problem.findById(req.params.id).populate("comments.author", "name").exec(function(err, problem) {
+  Problem.findById(req.params.id).populate("comments.user", "name").exec(function(err, problem) {
     if (err) {
       return handleError(res, err);
     }
@@ -99,7 +105,7 @@ exports.comment = function(req, res) {
     }
     problem.comments.push({
       content: req.body.content,
-      author: req.user
+      user: req.user
     });
 
     problem.save(function(err) {
@@ -119,10 +125,17 @@ exports.answer = function(req, res) {
     if (!problem) {
       return res.send(404);
     }
+
     var user = req.user;
 
     //calculate new ratings
-    var ranking = new glicko2.Glicko2();
+    var ranking = new glicko2.Glicko2({
+      tau: 0.5,
+      rating: 1200,
+      rd: 200,
+      vol: 0.06
+    });
+
     var p = ranking.makePlayer(problem.rating, problem.rating_deviation, problem.rating_volitility);
     var u = ranking.makePlayer(user.rating, user.rating_deviation, user.rating_volitility);
     var result = problem.checkAnswer(req.body);
@@ -142,6 +155,13 @@ exports.answer = function(req, res) {
     problem.rating = p.getRating();
     problem.rating_deviation = p.getRd();
     problem.rating_volitility = p.getVol();
+
+    problem.answers.push({
+      user: req.user, 
+      solve_time: req.body.solve_time,
+      answer: req.body.answer
+    })
+    problem.average_solve_time = (problem.average_solve_time * (problem.answers.length - 1)  + req.body.solve_time) / problem.answers.length;
 
     user.save(function(err) {
       if (err) {

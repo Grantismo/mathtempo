@@ -2,13 +2,7 @@
 
 angular.module('mathtempoApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-    $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
-    },
-    { 'title': 'Problems' ,
-      'link': '/problems'
-    }];
+    $scope.menu = [ /* { 'title': 'Home', 'link': '/' } */ ];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
