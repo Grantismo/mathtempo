@@ -159,7 +159,6 @@ exports.answer = function(req, res) {
             problem: updated_problem
           };
 
-          console.log(data);
           return res.json(201, data);
         });
       });

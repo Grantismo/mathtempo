@@ -83,9 +83,11 @@ ProblemSchema.methods = {
     var n = this.answers.length;
 
     //incremental standard deviation http://math.stackexchange.com/questions/102978/incremental-computation-of-standard-deviation
-    this.sd_solve_time = Math.sqrt(((n - 2) * Math.pow(this.sd_solve_time, 2))/(n - 1) + Math.pow(solveTime - this.average_solve_time, 2) / n);
+    if (n > 1) {
+      this.sd_solve_time = Math.sqrt(((n - 2) * Math.pow(this.sd_solve_time, 2))/(n - 1) + Math.pow(solveTime - this.average_solve_time, 2) / n);
 
-    this.average_solve_time = (this.average_solve_time * (n - 1) + solveTime) / n; //incremental average
+      this.average_solve_time = (this.average_solve_time * (n - 1) + solveTime) / n; //incremental average
+    }
   }
 }
 

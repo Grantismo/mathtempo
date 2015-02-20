@@ -24,8 +24,8 @@ function updateRatings(params, callback) {
   var p = ranking.makePlayer(problem.rating, problem.rating_deviation, problem.rating_volitility);
   var u = ranking.makePlayer(user.rating, user.rating_deviation, user.rating_volitility);
 
-  var score = 0;
-  if(result){
+  var score = result ? 1 :  0;
+  if(result && problem.answers.length > 1){ //todo modify so time penalty occurs when problem.sd becomes low
     var upper_bound = problem.average_solve_time + problem.sd_solve_time 
     var lower_bound = problem.average_solve_time - problem.sd_solve_time 
 
@@ -33,9 +33,7 @@ function updateRatings(params, callback) {
       score = 1.25; //bonus for faster than sd
     }else if(solve_time > upper_bound) {
       score = 0.5; //penalty for slower than sd
-    }else{
-      score = 1;
-    }
+    } 
   }
   var match = [u, p, score];
 
