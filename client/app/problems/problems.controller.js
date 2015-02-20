@@ -29,28 +29,28 @@ angular.module('mathtempoApp')
 
     var onKeypress = function(event) {
 
-      if (event.keyCode == 13) { //enter button
-        $state.go("problems-next");
-        console.log("unbind");
-        $document.off("keypress");
+      if (event.keyCode === 13) { //enter button
+        $state.go('problems-next');
+        console.log('unbind');
+        $document.off('keypress');
       }
-    }
+    };
 
 
     $scope.addComment = function(content) {
-      $http.post(baseUrl + "/comment", {
+      $http.post(baseUrl + '/comment', {
         content: content
       }).success(function(problem) {
         $scope.problem = problem;
 
       }).error(function(err) {
-        alert("Error adding comment");
+        alert('Error adding comment');
       });
     };
 
     $scope.submitAnswer = function(answer) {
       $scope.$broadcast('timer-stop');
-      $http.post(baseUrl + "/answer", {
+      $http.post(baseUrl + '/answer', {
         answer: answer,
         solve_time: elaspedTime
       }).success(function(result) {
@@ -66,11 +66,11 @@ angular.module('mathtempoApp')
 
         $scope.ratingProgressConfig.series[0].data = _.map($scope.user.ratings, ratingToHighcharts);
 
-        $document.on("keypress", onKeypress);
+        $document.on('keypress', onKeypress);
 
       }).error(function(err) {
         console.log(err);
-        alert("There was a problem");
+        alert('There was a problem');
       });
     };
 
@@ -82,7 +82,7 @@ angular.module('mathtempoApp')
       options: {
         chart: {
           type: 'spline',
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: '\'Helvetica Neue\', Helvetica, Arial, sans-serif',
         },
         legend: {
           enabled: false

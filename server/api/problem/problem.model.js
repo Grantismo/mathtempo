@@ -31,7 +31,8 @@ CommentSchema.plugin(timestamps);
 var ProblemSchema = new Schema({
   rating: {
     type: Number,
-    default: 1200
+    default: 1200,
+    index: true
   },
   rating_change: {
     type: Number,

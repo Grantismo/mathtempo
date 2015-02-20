@@ -26,7 +26,8 @@ var UserSchema = new Schema({
   github: {},
   rating: {
     type: Number,
-    default: 1200
+    default: 1200,
+    index: true
   },
   rating_deviation: {
     type: Number,
