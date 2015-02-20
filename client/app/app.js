@@ -6,7 +6,8 @@ angular.module('mathtempoApp', [
   'ngSanitize',
   'ui.router',
   'ui.bootstrap',
-  'timer'
+  'timer',
+  'highcharts-ng'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

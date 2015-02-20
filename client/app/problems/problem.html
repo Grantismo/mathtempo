@@ -1,5 +1,4 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-
 <div class="container">
   <div class="row">
     <div class="col-md-8">
@@ -17,15 +16,16 @@
           <form ng-if="!answered" ng-submit="submitAnswer(answer)">
             <div class="form-group">
               <label for="answer"> Answer </label> 
-              <input type="text" id="answer" class="form-control" ng-model="answer" required/>
+              <input type="text" id="answer" class="form-control" ng-model="answer" required auto-focus />
             </div>
             <input type="submit"  value="Submit" class="btn btn-primary" />
           </form>
 
           <div ng-if="answered" class="row">
             <div class="col-md-12">
-              <button ui-sref="problems-next" class="btn btn-primary"> Next <i class="glyphicon glyphicon-chevron-right"></i>
-              </button> 
+                <button ui-sref="problems-next" class="btn btn-primary"> 
+                  Next <i class="glyphicon glyphicon-chevron-right" />
+                </button> 
             </div>
           </div>
         </div>
@@ -65,19 +65,22 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading"> {{user.name}} </div>
-        <div class="panel-body"> Rating: {{user.rating}} 
-          <span class="label" ng-class="userRatingChange > 0 ? 'label-success' : 'label-default'" ng-show="userRatingChange">{{correct ? "+" : ""}}{{userRatingChange}}</span>
+        <div class="panel-body"> Rating: {{user.rating}} <span ng-if="answered" change-label="{{user.rating_change}}" /> <br />
+            Rank: {{user.rank}} 
+            <highchart id="rating-progress-chart" config="ratingProgressConfig"></highchart>
         </div>
       </div>
       <div ng-if="answered" class="panel panel-default">
         <div class="panel-heading"> Problem Details </div>
         <div class="panel-body"> 
-          Rating: {{problem.rating}} <span class="label" ng-class="problemRatingChange > 0 ? 'label-success' : 'label-default'" ng-show="problemRatingChange">{{!correct ? "+" : ""}}{{problemRatingChange}}</span>
+          Rating: {{problem.rating}} <span change-label="{{problem.rating_change}}" /> 
 <br />
 
-          Attempts: {{problem.comments.length}} <br />
+          Attempts: {{problem.answers.length}} <br />
 
           Average Solve Time: {{averageSolveTime}} <br />
+          Sd Solve Time: {{sdSolveTime}} <br />
+          {{problem.answers }}
         </div>
       </div>
     </div>

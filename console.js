@@ -4,6 +4,7 @@ var repl = require("repl");
 var envName = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var mongoose = require('mongoose');
+var sync = require('synchronize');
 var config = require('./server/config/environment');
 
 // Connect to database
@@ -19,5 +20,4 @@ var replServer = repl.start({
 replServer.context.config = config;
 replServer.context.User = User;
 replServer.context.Problem = Problem;
-
-
+replServer.context.sync = sync;

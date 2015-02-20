@@ -9,7 +9,10 @@ var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
   name: String,
-  email: { type: String, lowercase: true },
+  email: {
+    type: String,
+    lowercase: true
+  },
   role: {
     type: String,
     default: 'user'
@@ -22,17 +25,29 @@ var UserSchema = new Schema({
   google: {},
   github: {},
   rating: {
-            type: Number,
-            default: 1200
-          },
+    type: Number,
+    default: 1200
+  },
   rating_deviation: {
-                      type: Number,
-                      default: 200
-                    },
+    type: Number,
+    default: 200
+  },
   rating_volitility: {
-                       type: Number,   
-                       default: 0.06
-                     }
+    type: Number,
+    default: 0.06
+  },
+  rating_change: {
+    type: Number,
+    default: 0
+  },
+  rank: {
+    type: Number,
+    default: 0
+  },
+  ratings: [{
+    rating: Number,
+    date: Date
+  }]
 });
 
 UserSchema.plugin(timestamps);
@@ -97,15 +112,17 @@ UserSchema
   .path('email')
   .validate(function(value, respond) {
     var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
-      if(err) throw err;
-      if(user) {
-        if(self.id === user.id) return respond(true);
+    this.constructor.findOne({
+      email: value
+    }, function(err, user) {
+      if (err) throw err;
+      if (user) {
+        if (self.id === user.id) return respond(true);
         return respond(false);
       }
       respond(true);
     });
-}, 'The specified email address is already in use.');
+  }, 'The specified email address is already in use.');
 
 var validatePresenceOf = function(value) {
   return value && value.length;
@@ -128,6 +145,26 @@ UserSchema
  * Methods
  */
 UserSchema.methods = {
+  updateRank: function(callback) {
+    var User = mongoose.model('User', UserSchema);
+    var u = this;
+
+    User.count({
+      _id: {
+        $ne: u.id
+      },
+      rating: {
+        $gt: u.rating
+      }
+    }).exec(function(err, result) {
+      if (err) {
+        callback(err, null);
+      }
+      u.rank = result + 1;
+      callback(err, u);
+    });
+  },
+
   /**
    * Authenticate - check if the passwords are the same
    *

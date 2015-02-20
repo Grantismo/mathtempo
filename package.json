@@ -25,7 +25,8 @@
     "composable-middleware": "^0.3.0",
     "connect-mongo": "^0.4.1",
     "mongoose-timestamp": "latest",
-    "glicko2": "latest"
+    "glicko2": "latest",
+    "async": "0.9.0"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

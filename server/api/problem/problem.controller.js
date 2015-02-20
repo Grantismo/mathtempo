@@ -2,7 +2,8 @@
 
 var _ = require('lodash');
 var Problem = require('./problem.model');
-var glicko2 = require('glicko2');
+var ratings = require('../../components/ratings');
+var async = require('async');
 
 
 // Get list of problems
@@ -22,7 +23,12 @@ exports.nextProblem = function(req, res) {
   var upperBound = user.rating + range;
   var lowerBound = user.rating - range;
 
-  Problem.find({ rating: { $gt: lowerBound, $lt: upperBound } }, '-answer').exec(function(err, problems) {
+  Problem.find({
+    rating: {
+      $gt: lowerBound,
+      $lt: upperBound
+    }
+  }, '-answer').exec(function(err, problems) {
     if (err) {
       return handleError(res, err);
     }
@@ -127,58 +133,37 @@ exports.answer = function(req, res) {
     }
 
     var user = req.user;
+    var correct = problem.addAnswer(req);
 
-    //calculate new ratings
-    var ranking = new glicko2.Glicko2({
-      tau: 0.5,
-      rating: 1200,
-      rd: 200,
-      vol: 0.06
-    });
+    ratings.updateRatings({
+      user: user,
+      problem: problem,
+      result: correct,
+      solve_time: req.body.solve_time
+    }, function(err, data) {
 
-    var p = ranking.makePlayer(problem.rating, problem.rating_deviation, problem.rating_volitility);
-    var u = ranking.makePlayer(user.rating, user.rating_deviation, user.rating_volitility);
-    var result = problem.checkAnswer(req.body);
-    var match = [u, p, (result ? 1 : 0)];
+      var updated_user = data.user;
+      var updated_problem = data.problem;
 
-    ranking.updateRatings([match]);
+      updated_user.updateRank(function(err, result) {
+        async.map([updated_user, updated_problem], function(obj, callback){
+          obj.save(callback);
+        }, function(err, result) {
+          if (err) {
+            return handleError(res, err);
+          }
 
-    //update models
+          var data = {
+            correct: correct,
+            user: updated_user,
+            problem: updated_problem
+          };
 
-    var userRatingChange = u.getRating() - user.rating;
-    user.rating = u.getRating();
-    user.rating_deviation = u.getRd();
-    user.rating_volitility = u.getVol();
-
-
-    var problemRatingChange = p.getRating() - problem.rating;
-    problem.rating = p.getRating();
-    problem.rating_deviation = p.getRd();
-    problem.rating_volitility = p.getVol();
-
-    problem.answers.push({
-      user: req.user, 
-      solve_time: req.body.solve_time,
-      answer: req.body.answer
-    })
-    problem.average_solve_time = (problem.average_solve_time * (problem.answers.length - 1)  + req.body.solve_time) / problem.answers.length;
-
-    user.save(function(err) {
-      if (err) {
-        return handleError(res, err);
-      }
-      problem.save(function(err2) {
-        if (err2) {
-          return handleError(res, err2);
-        }
-        return res.json(201, {
-          correct: result,
-          userRatingChange: userRatingChange,
-          problemRatingChange: problemRatingChange
+          console.log(data);
+          return res.json(201, data);
         });
       });
     });
-
   });
 }
 
