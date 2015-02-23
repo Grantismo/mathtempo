@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/mathtempo-dev'
   },
 
-  seedDB: false
+  seedDB: true
 };

@@ -28,7 +28,6 @@ angular.module('mathtempoApp')
     });
 
     var onKeypress = function(event) {
-
       if (event.keyCode === 13) { //enter button
         $state.go('problems-next');
         console.log('unbind');
@@ -44,7 +43,7 @@ angular.module('mathtempoApp')
         $scope.problem = problem;
 
       }).error(function(err) {
-        alert('Error adding comment');
+        window.alert('Error adding comment');
       });
     };
 
@@ -70,7 +69,7 @@ angular.module('mathtempoApp')
 
       }).error(function(err) {
         console.log(err);
-        alert('There was a problem');
+        window.alert('There was a problem');
       });
     };
 
