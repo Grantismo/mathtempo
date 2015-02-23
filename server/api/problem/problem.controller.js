@@ -23,16 +23,15 @@ exports.nextProblem = function(req, res) {
   var upperBound = user.rating + range;
   var lowerBound = user.rating - range;
 
-  Problem.find({
+  Problem.random({
     rating: {
       $gt: lowerBound,
       $lt: upperBound
     }
-  }, '-answer').exec(function(err, problems) {
-    if (err) {
+  }, '-answer', function(err, problem) {
+    if (err || !problem) {
       return handleError(res, err);
     }
-    var problem = problems[Math.floor(Math.random() * problems.length)]; //TODO move random selection to a db query for performance
     return res.json(problem);
   });
 };

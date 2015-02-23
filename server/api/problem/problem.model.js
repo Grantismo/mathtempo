@@ -93,13 +93,13 @@ ProblemSchema.methods = {
 }
 
 
-ProblemSchema.statics.random = function(callback) {
-  this.count(function(err, count) {
+ProblemSchema.statics.random = function(query, fields, callback) {
+  this.count(query, function(err, count) {
     if (err) {
       return callback(err);
     }
     var rand = Math.floor(Math.random() * count);
-    this.findOne().skip(rand).exec(callback);
+    this.findOne(query, fields).skip(rand).exec(callback);
   }.bind(this));
 };
 
