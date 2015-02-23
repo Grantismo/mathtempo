@@ -5,9 +5,11 @@ Inspired by [chesstempo.com](www.chesstempo.com).
 ## Usage
 
 For a development preview:
+
     grunt serve
 
 For a production preview:
+
     grunt serve:dist
 
 ## Generators
