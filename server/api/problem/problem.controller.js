@@ -32,7 +32,7 @@ exports.nextProblem = function(req, res) {
     if (err) {
       return handleError(res, err);
     }
-    var problem = problems[Math.floor(Math.random() * problems.length)];
+    var problem = problems[Math.floor(Math.random() * problems.length)]; //TODO move random selection to a db query for performance
     return res.json(problem);
   });
 };

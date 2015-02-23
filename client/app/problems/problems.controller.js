@@ -61,7 +61,7 @@ angular.module('mathtempoApp')
         $scope.problem = result.problem;
         result.user.rank_change = result.user.rank - $scope.user.rank;
         $scope.user = result.user;
-        Auth.setCurrentUser($scope.user); //todo fix this 
+        Auth.setCurrentUser($scope.user); //TODO fix this 
 
         $scope.ratingProgressConfig.series[0].data = _.map($scope.user.ratings, ratingToHighcharts);
 
