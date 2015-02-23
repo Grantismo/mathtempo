@@ -4,6 +4,10 @@ Inspired by [chesstempo.com](www.chesstempo.com).
 
 ## Usage
 
+Install dependencies:
+
+    bower install
+
 For a development preview:
 
     grunt serve
