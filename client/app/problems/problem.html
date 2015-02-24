@@ -5,7 +5,9 @@
       <div class="panel" ng-class="answered ? (correct ? 'panel-success' : 'panel-warning'): 'panel-default'">
         <div class="panel-heading">
           Problem #{{problem._id}}
-          <div class="pull-right"> <timer> {{hhours}}:{{mminutes}}:{{sseconds}}</timer> </div>
+          <div class="pull-right"> 
+            <timer> {{hhours}}:{{mminutes}}:{{sseconds}}</timer> 
+          </div>
         </div>
         <div class="panel-body"> 
           <div class="well">
@@ -16,9 +18,9 @@
           <form ng-if="!answered" ng-submit="submitAnswer(answer)">
             <div class="form-group">
               <label for="answer"> Answer </label> 
-              <input type="text" id="answer" class="form-control" ng-model="answer" required auto-focus />
+                <input type="text" id="answer" class="form-control" ng-model="answer" required auto-focus></input>
             </div>
-            <input type="submit"  value="Submit" class="btn btn-primary" />
+            <input type="submit"  value="Submit" class="btn btn-primary"></input>
           </form>
 
           <div ng-if="answered" class="row">
@@ -32,16 +34,16 @@
       </div>
       <div class="panel panel-default comments" ng-if="answered">
         <div class="panel-heading">
-          <h4> Comments </h4> <small>Share your tips & tricks :)</small>
+          <h4> Comments </h4> <small>Share your tips &amp; tricks :)</small>
         </div>
         <div class="panel-body">
           <div class="row">
             <div class="col-md-12">
               <form class="form-vertical" novalidate ng-submit="addComment(content)">
                 <div class="form-group">
-                  <textarea rows="3" class="form-control" ng-model="content" />
+                  <textarea rows="3" class="form-control" ng-model="content"> </textarea>
                 </div>
-                <input type="submit" value="Add Comment" class="btn btn-primary" />
+                <input type="submit" value="Add Comment" class="btn btn-primary"> </input>
               </form>
               <hr />
             </div>
@@ -66,19 +68,16 @@
       <div class="panel panel-default">
         <div class="panel-heading"> {{user.name}} </div>
         <div class="panel-body"> 
-          Rank: {{user.rank}} <span ng-if="answered && user.rank_change != 0" change-label="{{-user.rank_change}}" /> <br />
-            Rating: {{user.rating}} <span ng-if="answered" change-label="{{user.rating_change}}" /> <br />
-            <highchart id="rating-progress-chart" config="ratingProgressConfig"></highchart>
+          Rank: {{user.rank}} <span ng-if="answered && user.rank_change != 0" change-label="{{-user.rank_change}}"></span><br />
+          Rating: {{user.rating}} <span ng-if="answered" change-label="{{user.rating_change}}"></span> <br />
+          <highchart id="rating-progress-chart" config="ratingProgressConfig"></highchart>
         </div>
       </div>
       <div ng-if="answered" class="panel panel-default">
         <div class="panel-heading"> Problem Details </div>
         <div class="panel-body"> 
-          Rating: {{problem.rating}} <span change-label="{{problem.rating_change}}" /> 
-<br />
-
+          Rating: {{problem.rating}} <span change-label="{{problem.rating_change}}" ></span> <br />
           Attempts: {{problem.answers.length}} <br />
-
           Average Solve Time: {{problem.average_solve_time | duration }} <br />
         </div>
       </div>
