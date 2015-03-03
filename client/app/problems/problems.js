@@ -5,11 +5,8 @@ angular.module('mathtempoApp').config(function($stateProvider) {
     url: '/problems',
     templateUrl: 'app/problems/problems.html',
     controller: 'ProblemsCtrl'
-  }).state('problems-next', {
-    url: '/problems/next',
-    controller: 'NextProblemCtrl'
-  }).state('problems-detail', {
-    url: '/problems/:id',
+  }).state('problems-session', {
+    url: '/problems/session',
     templateUrl: 'app/problems/problem.html',
     controller: 'ProblemCtrl'
   });

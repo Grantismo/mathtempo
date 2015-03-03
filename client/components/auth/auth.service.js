@@ -100,11 +100,6 @@ angular.module('mathtempoApp')
       getCurrentUser: function() {
         return currentUser;
       },
-      
-      setCurrentUser: function(user){
-        currentUser = user;
-      },
-
       /**
        * Check if a user is logged in
        *

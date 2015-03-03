@@ -6,38 +6,45 @@ angular.module('mathtempoApp')
     $http.get('/api/problems').success(function(problems) {
       $scope.problems = problems;
     });
-  }).controller('NextProblemCtrl', function($scope, $http, $location) {
-    $http.get('/api/problems/next').success(function(problem) {
-      $location.path('/problems/' + problem._id);
-    });
-  }).controller('ProblemCtrl', function($scope, $stateParams, $http, Auth, $state, $document) {
+  }).controller('ProblemCtrl', function($scope, $stateParams, $http, Auth, $state, $document, $location, $interval) {
     $scope.user = Auth.getCurrentUser();
     $scope.answered = false;
+    $scope.progress = 0;
 
     var elaspedTime = 0;
-
     $scope.$on('timer-tick', function(event, args) {
       elaspedTime = args.millis;
     });
 
-    var baseUrl = '/api/problems/' + $stateParams.id;
+    function problemUrl(problemId) {
+      return '/api/problems/' + problemId;
+    }
 
     $scope.problem = {};
-    $http.get(baseUrl).success(function(problem) {
+
+    $http.get('/api/problems/next').success(function(problem) {
       $scope.problem = problem;
     });
 
     var onKeypress = function(event) {
       if (event.keyCode === 13) { //enter button
-        $state.go('problems-next');
-        console.log('unbind');
+        $scope.nextProblem();
         $document.off('keypress');
       }
     };
 
+    $scope.nextProblem = function() {
+      $http.get('/api/problems/next').success(function(problem) {
+        $scope.answered = false;
+        $scope.problem = problem;
+        elaspedTime = 0;
+        $scope.$broadcast('timer-start');
+      });
+    };
+
 
     $scope.addComment = function(content) {
-      $http.post(baseUrl + '/comment', {
+      $http.post(problemUrl($scope.problem._id) + '/comment', {
         content: content
       }).success(function(problem) {
         $scope.problem = problem;
@@ -47,9 +54,8 @@ angular.module('mathtempoApp')
       });
     };
 
-    $scope.submitAnswer = function(answer) {
-      $scope.$broadcast('timer-stop');
-      $http.post(baseUrl + '/answer', {
+    function postAnswer(answer){
+      $http.post(problemUrl($scope.problem._id) + '/answer', {
         answer: answer,
         solve_time: elaspedTime
       }).success(function(result) {
@@ -61,7 +67,6 @@ angular.module('mathtempoApp')
         $scope.problem = result.problem;
         result.user.rank_change = result.user.rank - $scope.user.rank;
         $scope.user = result.user;
-        Auth.setCurrentUser($scope.user); //TODO fix this 
 
         $scope.ratingProgressConfig.series[0].data = _.map($scope.user.ratings, ratingToHighcharts);
 
@@ -69,8 +74,12 @@ angular.module('mathtempoApp')
 
       }).error(function(err) {
         console.log(err);
-        window.alert('There was a problem');
       });
+    }
+
+    $scope.submitAnswer = function(answer) {
+      $scope.$broadcast('timer-stop');
+      postAnswer(answer);
     };
 
     function ratingToHighcharts(r) {

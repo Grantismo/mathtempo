@@ -20,13 +20,14 @@
               <label for="answer"> Answer </label> 
                 <input type="text" id="answer" class="form-control" ng-model="answer" required auto-focus></input>
             </div>
-            <input type="submit"  value="Submit" class="btn btn-primary"></input>
+            <input type="submit"  value="Submit" class="btn btn-primary">
+</input>
           </form>
 
           <div ng-if="answered" class="row">
             <div class="col-md-12">
-                <button ui-sref="problems-next" class="btn btn-primary"> 
-                  Next <i class="glyphicon glyphicon-chevron-right"></i>
+                <button ng-click="nextProblem()" class="btn btn-primary"> 
+                  Next <i class="glyphicon glyphicon-chevron-right" />
                 </button> 
             </div>
           </div>
@@ -70,7 +71,7 @@
         <div class="panel-body"> 
           Rank: {{user.rank}} <span ng-if="answered && user.rank_change != 0" change-label="{{-user.rank_change}}"></span><br />
           Rating: {{user.rating}} <span ng-if="answered" change-label="{{user.rating_change}}"></span> <br />
-          <highchart id="rating-progress-chart" config="ratingProgressConfig"></highchart>
+          <highchart ng-if="ratingProgressConfig.series[0].data.length > 0" id="rating-progress-chart" config="ratingProgressConfig"></highchart>
         </div>
       </div>
       <div ng-if="answered" class="panel panel-default">

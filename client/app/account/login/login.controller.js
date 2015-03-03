@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mathtempoApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $window) {
+  .controller('LoginCtrl', function ($scope, Auth, $location, $window, $state) {
     $scope.user = {};
     $scope.errors = {};
 
@@ -15,7 +15,7 @@ angular.module('mathtempoApp')
         })
         .then( function() {
           // Logged in, redirect to home
-          $location.path('/');
+          $state.go('problems-session');
         })
         .catch( function(err) {
           $scope.errors.other = err.message;
