@@ -82,6 +82,23 @@
           Average Solve Time: {{problem.average_solve_time | duration }} <br />
         </div>
       </div>
+      <div class="panel panel-default">
+        <div class="panel-heading"> Leaderboard </div>
+        <div class="panel-body"> 
+          <table class="table table-striped">
+            <tr>
+              <th>#</th>
+              <th>Rating</th>
+              <th>Name</th>
+            </tr>
+            <tr ng-repeat="u in users" ng-class="{info: user._id === u._id}">
+              <td>{{$index + 1}}</td>
+              <td>{{u.rating}}</td>
+              <td>{{u.name}} </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

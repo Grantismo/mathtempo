@@ -11,6 +11,7 @@ angular.module('mathtempoApp')
     $scope.answered = false;
     $scope.progress = 0;
 
+
     var elaspedTime = 0;
     $scope.$on('timer-tick', function(event, args) {
       elaspedTime = args.millis;
@@ -19,9 +20,18 @@ angular.module('mathtempoApp')
     function problemUrl(problemId) {
       return '/api/problems/' + problemId;
     }
+    
+
+    function updateUsers(){
+      $http.get('/api/users').success(function(users) {
+        $scope.users = users;
+      });
+    }
+
+    $scope.users = {};
+    updateUsers();
 
     $scope.problem = {};
-
     $http.get('/api/problems/next').success(function(problem) {
       $scope.problem = problem;
     });
@@ -69,6 +79,7 @@ angular.module('mathtempoApp')
         $scope.user = result.user;
 
         $scope.ratingProgressConfig.series[0].data = _.map($scope.user.ratings, ratingToHighcharts);
+        updateUsers();
 
         $document.on('keypress', onKeypress);
 
